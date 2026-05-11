@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmarTube — Premium Media Downloader</title>
+  <meta name="description" content="Download high-quality videos and audio from YouTube, TikTok, and Twitter/X.">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════════════════ -->
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-name">OmarTube</div>
+      <div class="brand-sub">&nbsp;&nbsp;&nbsp;Downloader</div>
+      <div class="brand-pro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRO</div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Download</div>
+
+    <button class="nav-btn active" data-page="video" id="nav-video">
+      <span class="icon">🎬</span> Video Download
+    </button>
+    <button class="nav-btn" data-page="audio" id="nav-audio">
+      <span class="icon">🎵</span> Audio Download
+    </button>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">General</div>
+
+    <button class="nav-btn" data-page="about" id="nav-about">
+      <span class="icon">ℹ️</span> About
+    </button>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-bottom-label">Supported Platforms</div>
+      <div class="platform-pills">
+        <span class="pill yt">▶ YT</span>
+        <span class="pill tt">♪ TT</span>
+        <span class="pill tw">𝕏</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- ──────────── VIDEO PAGE ──────────── -->
+    <section class="page active" id="page-video">
+      <div class="page-header">
+        <h1 class="page-title">Video Download</h1>
+        <div class="badge-row">
+          <span class="badge yt">YouTube</span>
+          <span class="badge tt">TikTok</span>
+          <span class="badge tw">Twitter/X</span>
+        </div>
+      </div>
+      <p class="page-desc">Paste a video link from YouTube, TikTok, or Twitter/X and download in your preferred quality.
+      </p>
+
+      <!-- Input Section -->
+      <div class="video-input-section" id="video-input-section">
+        <div class="card">
+          <div class="card-label">Video URL</div>
+          <div class="input-row">
+            <input type="text" class="input-field" id="video-url"
+              placeholder="https://www.youtube.com/watch?v=... or TikTok/Twitter link" spellcheck="false"
+              autocomplete="off">
+            <button class="btn-paste" id="video-paste-btn">📋 Paste</button>
+          </div>
+          <div class="platform-detected" id="video-platform"></div>
+        </div>
+
+        <!-- Thumbnail Preview -->
+        <div class="card preview-card" id="video-preview">
+          <div class="preview-loading" id="video-preview-loading">
+            <div class="spinner"></div> Fetching video info...
+          </div>
+          <div class="preview-inner" id="video-preview-content" style="display:none">
+            <div class="preview-thumb-wrap">
+              <img id="video-preview-thumb" src="" alt="Thumbnail">
+              <span class="preview-duration" id="video-preview-duration"></span>
+            </div>
+            <div class="preview-info">
+              <div class="preview-title" id="video-preview-title"></div>
+              <div class="preview-uploader" id="video-preview-uploader"></div>
+              <span class="preview-platform-badge" id="video-preview-badge"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Download Options</div>
+          <div class="options-row">
+            <div class="option-group">
+              <label>Quality</label>
+              <select class="select-field" id="video-quality">
+                <option value="240p">240p</option>
+                <option value="360p">360p</option>
+                <option value="480p">480p</option>
+                <option value="720p" selected>720p</option>
+                <option value="1080p">1080p</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-action btn-download-video" id="video-download-btn">
+          <span>⬇</span> Download Video
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-section" id="video-progress">
+        <div class="card">
+          <div class="progress-stats">
+            <span id="video-status-msg">Starting download...</span>
+            <span class="progress-pct" id="video-pct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="video-progress-bar"></div>
+          </div>
+          <div class="progress-meta">
+            <span id="video-speed"></span>
+            <span id="video-eta"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div class="success-section" id="video-success">
+        <div class="card">
+          <div class="check-circle">✓</div>
+          <div class="success-title">Download Complete!</div>
+          <div class="success-info" id="video-result-info"></div>
+          <div class="result-buttons">
+            <a href="#" class="btn-action btn-save-file" id="video-save-link" target="_blank">
+              <span>📁</span> Save File
+            </a>
+            <button class="btn-action btn-search-again" id="video-search-again">
+              <span>🔍</span> Search Again
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-section" id="video-error">
+        <div class="error-box">
+          <div class="error-title">❌ Download Failed</div>
+          <div class="error-msg" id="video-error-msg"></div>
+        </div>
+        <button class="btn-action btn-search-again" id="video-error-retry">
+          <span>🔍</span> Try Again
+        </button>
+      </div>
+    </section>
+
+    <!-- ──────────── AUDIO PAGE ──────────── -->
+    <section class="page" id="page-audio">
+      <div class="page-header">
+        <h1 class="page-title">Audio Download</h1>
+        <span style="font-size:1.6rem;">🎵</span>
+      </div>
+      <p class="page-desc">Extract audio from any YouTube, TikTok, or Twitter/X video. Choose your preferred format.</p>
+
+      <!-- Input Section -->
+      <div class="audio-input-section" id="audio-input-section">
+        <div class="card">
+          <div class="card-label">Video / Audio URL</div>
+          <div class="input-row">
+            <input type="text" class="input-field" id="audio-url" placeholder="Paste any video link to extract audio..."
+              spellcheck="false" autocomplete="off">
+            <button class="btn-paste" id="audio-paste-btn">📋 Paste</button>
+          </div>
+          <div class="platform-detected" id="audio-platform"></div>
+        </div>
+
+        <!-- Thumbnail Preview -->
+        <div class="card preview-card" id="audio-preview">
+          <div class="preview-loading" id="audio-preview-loading">
+            <div class="spinner"></div> Fetching video info...
+          </div>
+          <div class="preview-inner" id="audio-preview-content" style="display:none">
+            <div class="preview-thumb-wrap">
+              <img id="audio-preview-thumb" src="" alt="Thumbnail">
+              <span class="preview-duration" id="audio-preview-duration"></span>
+            </div>
+            <div class="preview-info">
+              <div class="preview-title" id="audio-preview-title"></div>
+              <div class="preview-uploader" id="audio-preview-uploader"></div>
+              <span class="preview-platform-badge" id="audio-preview-badge"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Audio Options</div>
+          <div class="options-row">
+            <div class="option-group">
+              <label>Format</label>
+              <select class="select-field" id="audio-format">
+                <option value="mp3" selected>MP3</option>
+                <option value="aac">AAC</option>
+                <option value="wav">WAV</option>
+                <option value="flac">FLAC</option>
+                <option value="ogg">OGG</option>
+              </select>
+            </div>
+            <div class="option-group">
+              <label>Bitrate</label>
+              <select class="select-field" id="audio-bitrate">
+                <option value="128">128 kbps</option>
+                <option value="192" selected>192 kbps</option>
+                <option value="256">256 kbps</option>
+                <option value="320">320 kbps</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-action btn-download-audio" id="audio-download-btn">
+          <span>🎵</span> Download Audio
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-section" id="audio-progress">
+        <div class="card">
+          <div class="progress-stats">
+            <span id="audio-status-msg">Starting download...</span>
+            <span class="progress-pct" id="audio-pct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill audio" id="audio-progress-bar"></div>
+          </div>
+          <div class="progress-meta">
+            <span id="audio-speed"></span>
+            <span id="audio-eta"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div class="success-section" id="audio-success">
+        <div class="card">
+          <div class="check-circle">✓</div>
+          <div class="success-title">Download Complete!</div>
+          <div class="success-info" id="audio-result-info"></div>
+          <div class="result-buttons">
+            <a href="#" class="btn-action btn-save-file" id="audio-save-link" target="_blank">
+              <span>📁</span> Save File
+            </a>
+            <button class="btn-action btn-search-again" id="audio-search-again">
+              <span>🔍</span> Search Again
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-section" id="audio-error">
+        <div class="error-box">
+          <div class="error-title">❌ Download Failed</div>
+          <div class="error-msg" id="audio-error-msg"></div>
+        </div>
+        <button class="btn-action btn-search-again" id="audio-error-retry">
+          <span>🔍</span> Try Again
+        </button>
+      </div>
+    </section>
+
+    <!-- ──────────── ABOUT PAGE ──────────── -->
+    <section class="page" id="page-about">
+      <h1 class="page-title">About</h1>
+      <p class="page-desc">Learn more about this application and its creator.</p>
+
+      <!-- App Info -->
+      <div class="card">
+        <div class="about-app-title">⬇ OmarTube Downloader PRO</div>
+        <div class="about-version">Version 2.0 — Web Edition</div>
+        <div class="about-desc">
+          A modern, professional media downloader supporting YouTube, TikTok, and Twitter/X.
+          <br><br>
+          <ul>
+            <li>Download videos in up to 1080p quality</li>
+            <li>Extract audio in MP3, AAC, WAV, FLAC, OGG</li>
+            <li>Beautiful glassmorphism dark theme</li>
+            <li>No page refreshes — seamless UX</li>
+            <li>Built with Flask + yt-dlp</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Creator -->
+      <div class="card">
+        <div class="card-label">Creator</div>
+        <div class="creator-row">
+          <div class="avatar">OM</div>
+          <div>
+            <div class="creator-name">Made by Omar Mahmoud</div>
+            <div class="creator-role">Prompt Engineer — Data Analyst</div>
+          </div>
+        </div>
+
+        <div class="social-row">
+          <a href="https://www.linkedin.com/in/omar-mahmoud-13458a371/" target="_blank" class="btn-social btn-linkedin">
+            🔗 LinkedIn
+          </a>
+          <a href="https://wa.me/201277318666" target="_blank" class="btn-social btn-whatsapp">
+            💬 WhatsApp
+          </a>
+        </div>
+        <div class="social-hint">Connect with me on social platforms</div>
+      </div>
+
+      <!-- Footer -->
+      <div class="card">
+        <div class="about-footer">© 2026 Omar Mahmoud — All Rights Reserved</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════ -->
+  <script>
+    // ── Navigation ──
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('.page');
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.page;
+        navBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        pages.forEach(p => p.classList.toggle('active', p.id === `page-${target}`));
+      });
+    });
+
+    // ── Platform Detection ──
+    function detectPlatform(url) {
+      const lower = url.toLowerCase();
+      if (lower.includes('youtube.com') || lower.includes('youtu.be')) return { name: 'YouTube', emoji: '▶', color: '#ff0033' };
+      if (lower.includes('tiktok.com')) return { name: 'TikTok', emoji: '♪', color: '#00f2ea' };
+      if (lower.includes('twitter.com') || lower.includes('x.com')) return { name: 'Twitter/X', emoji: '𝕏', color: '#1da1f2' };
+      return null;
+    }
+
+    // ── Thumbnail Preview ──
+    const previewTimers = {};
+    const previewCache = {};
+
+    function fetchPreview(prefix, url) {
+      const previewCard = document.getElementById(`${prefix}-preview`);
+      const loading = document.getElementById(`${prefix}-preview-loading`);
+      const content = document.getElementById(`${prefix}-preview-content`);
+
+      // Check cache first
+      if (previewCache[url]) {
+        renderPreview(prefix, previewCache[url]);
+        return;
+      }
+
+      // Show loading
+      previewCard.classList.add('visible');
+      loading.style.display = 'flex';
+      content.style.display = 'none';
+
+      fetch('/api/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            previewCard.classList.remove('visible');
+            return;
+          }
+          previewCache[url] = data;
+          renderPreview(prefix, data);
+        })
+        .catch(() => { previewCard.classList.remove('visible'); });
+    }
+
+    function renderPreview(prefix, data) {
+      const previewCard = document.getElementById(`${prefix}-preview`);
+      const loading = document.getElementById(`${prefix}-preview-loading`);
+      const content = document.getElementById(`${prefix}-preview-content`);
+
+      document.getElementById(`${prefix}-preview-thumb`).src = data.thumbnail || '';
+      document.getElementById(`${prefix}-preview-title`).textContent = data.title || '';
+      document.getElementById(`${prefix}-preview-duration`).textContent = data.duration || '';
+      document.getElementById(`${prefix}-preview-uploader`).textContent = data.uploader || '';
+
+      const badge = document.getElementById(`${prefix}-preview-badge`);
+      const p = detectPlatform(data.platform === 'youtube' ? 'youtube.com' : data.platform === 'tiktok' ? 'tiktok.com' : 'x.com');
+      if (p) {
+        badge.textContent = `${p.emoji} ${p.name}`;
+        badge.style.color = p.color;
+        badge.style.borderColor = p.color;
+        badge.style.border = `1px solid ${p.color}30`;
+      }
+
+      loading.style.display = 'none';
+      content.style.display = 'flex';
+      previewCard.classList.add('visible');
+    }
+
+    function hidePreview(prefix) {
+      document.getElementById(`${prefix}-preview`).classList.remove('visible');
+    }
+
+    function setupUrlInput(inputId, labelId, prefix) {
+      const input = document.getElementById(inputId);
+      const label = document.getElementById(labelId);
+
+      input.addEventListener('input', () => {
+        const url = input.value.trim();
+        const p = detectPlatform(url);
+        if (p) {
+          label.innerHTML = `<span style="color:${p.color}">${p.emoji} Detected: ${p.name}</span>`;
+          input.style.borderColor = p.color;
+        } else {
+          label.innerHTML = '';
+          input.style.borderColor = '';
+          hidePreview(prefix);
+        }
+
+        // Debounced preview fetch
+        clearTimeout(previewTimers[prefix]);
+        if (p && url.length > 10) {
+          previewTimers[prefix] = setTimeout(() => fetchPreview(prefix, url), 600);
+        }
+      });
+    }
+
+    setupUrlInput('video-url', 'video-platform', 'video');
+    setupUrlInput('audio-url', 'audio-platform', 'audio');
+
+    // ── Paste Buttons ──
+    function setupPaste(btnId, inputId) {
+      document.getElementById(btnId).addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          const input = document.getElementById(inputId);
+          input.value = text;
+          input.dispatchEvent(new Event('input'));
+          input.focus();
+        } catch (e) { console.warn('Clipboard read failed:', e); }
+      });
+    }
+
+    setupPaste('video-paste-btn', 'video-url');
+    setupPaste('audio-paste-btn', 'audio-url');
+
+    // ── Download Flow ──
+    function startDownload(type) {
+      const prefix = type;
+      const urlInput = document.getElementById(`${prefix}-url`);
+      const url = urlInput.value.trim();
+
+      if (!url) {
+        urlInput.classList.add('shake');
+        setTimeout(() => urlInput.classList.remove('shake'), 500);
+        urlInput.focus();
+        return;
+      }
+
+      const body = { url, type };
+      if (type === 'video') {
+        body.quality = document.getElementById('video-quality').value;
+      } else {
+        body.audioFormat = document.getElementById('audio-format').value;
+        body.bitrate = document.getElementById('audio-bitrate').value;
+      }
+
+      showSection(prefix, 'progress');
+
+      document.getElementById(`${prefix}-progress-bar`).style.width = '0%';
+      document.getElementById(`${prefix}-pct`).textContent = '0%';
+      document.getElementById(`${prefix}-status-msg`).textContent = 'Starting download...';
+      document.getElementById(`${prefix}-speed`).textContent = '';
+      document.getElementById(`${prefix}-eta`).textContent = '';
+      document.getElementById(`${prefix}-download-btn`).disabled = true;
+
+      fetch('/api/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) { showError(prefix, data.error); return; }
+          pollStatus(prefix, data.taskId);
+        })
+        .catch(err => showError(prefix, err.message));
+    }
+
+    function pollStatus(prefix, taskId) {
+      const interval = setInterval(() => {
+        fetch(`/api/status/${taskId}`)
+          .then(r => r.json())
+          .then(task => {
+            if (task.error && task.status === 'error') {
+              clearInterval(interval);
+              showError(prefix, task.error);
+              return;
+            }
+            document.getElementById(`${prefix}-progress-bar`).style.width = `${task.progress}%`;
+            document.getElementById(`${prefix}-pct`).textContent = `${task.progress}%`;
+            document.getElementById(`${prefix}-speed`).textContent = task.speed ? `Speed: ${task.speed}` : '';
+            document.getElementById(`${prefix}-eta`).textContent = task.eta ? `ETA: ${task.eta}` : '';
+
+            if (task.status === 'downloading') document.getElementById(`${prefix}-status-msg`).textContent = 'Downloading...';
+            else if (task.status === 'processing') document.getElementById(`${prefix}-status-msg`).textContent = 'Merging / Converting...';
+
+            if (task.status === 'done') {
+              clearInterval(interval);
+              showSuccess(prefix, task.title, taskId);
+            }
+          })
+          .catch(() => { });
+      }, 800);
+    }
+
+    function showSection(prefix, section) {
+      const inputSec = document.getElementById(`${prefix}-input-section`);
+      const progressSec = document.getElementById(`${prefix}-progress`);
+      const successSec = document.getElementById(`${prefix}-success`);
+      const errorSec = document.getElementById(`${prefix}-error`);
+
+      inputSec.style.display = 'none';
+      progressSec.classList.remove('visible');
+      successSec.classList.remove('visible');
+      errorSec.classList.remove('visible');
+
+      if (section === 'input') inputSec.style.display = '';
+      else if (section === 'progress') progressSec.classList.add('visible');
+      else if (section === 'success') successSec.classList.add('visible');
+      else if (section === 'error') errorSec.classList.add('visible');
+    }
+
+    function showSuccess(prefix, title, taskId) {
+      document.getElementById(`${prefix}-result-info`).textContent = title || 'File ready';
+      document.getElementById(`${prefix}-save-link`).href = `/api/file/${taskId}`;
+      showSection(prefix, 'success');
+    }
+
+    function showError(prefix, message) {
+      document.getElementById(`${prefix}-error-msg`).textContent = message;
+      document.getElementById(`${prefix}-download-btn`).disabled = false;
+      showSection(prefix, 'error');
+    }
+
+    function resetToInput(prefix) {
+      document.getElementById(`${prefix}-url`).value = '';
+      document.getElementById(`${prefix}-download-btn`).disabled = false;
+      document.getElementById(`${prefix}-platform`).innerHTML = '';
+      document.getElementById(`${prefix}-url`).style.borderColor = '';
+      hidePreview(prefix);
+      showSection(prefix, 'input');
+      document.getElementById(`${prefix}-url`).focus();
+    }
+
+    // ── Button Event Listeners ──
+    document.getElementById('video-download-btn').addEventListener('click', () => startDownload('video'));
+    document.getElementById('audio-download-btn').addEventListener('click', () => startDownload('audio'));
+    document.getElementById('video-search-again').addEventListener('click', () => resetToInput('video'));
+    document.getElementById('audio-search-again').addEventListener('click', () => resetToInput('audio'));
+    document.getElementById('video-error-retry').addEventListener('click', () => resetToInput('video'));
+    document.getElementById('audio-error-retry').addEventListener('click', () => resetToInput('audio'));
+
+    // ── Enter key support ──
+    document.getElementById('video-url').addEventListener('keypress', e => { if (e.key === 'Enter') startDownload('video'); });
+    document.getElementById('audio-url').addEventListener('keypress', e => { if (e.key === 'Enter') startDownload('audio'); });
+
+    // ── Auto-focus ──
+    window.addEventListener('DOMContentLoaded', () => document.getElementById('video-url').focus());
+  </script>
+
+</body>
+
+</html>
